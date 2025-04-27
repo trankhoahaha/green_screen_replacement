@@ -9,7 +9,7 @@ def get_green_screen_bbox(mask):
     x, y, w, h = cv.boundingRect(largest_contour)
     return (x, y, w, h)
 
-def replace_green_screen(frames, bg_image, lower_green, upper_green):
+def replace_green_screen03(frames, bg_image, lower_green, upper_green):
     output_frames = []
 
     for frame in frames:

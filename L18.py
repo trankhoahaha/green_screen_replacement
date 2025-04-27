@@ -1,6 +1,6 @@
 import cv2 as cv
 
-def replace_green_screen1(frames, replacement_img, lower_green, upper_green):
+def replace_green_screen18(frames, replacement_img, lower_green, upper_green):
     result_frames = []
     for frame in frames:
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)

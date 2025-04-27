@@ -3,6 +3,12 @@ import cv2 as cv
 import os
 import tempfile
 from L30 import replace_green_screen30
+from L06 import replace_green_screen_adaptive
+from process_video import replace_green_screen
+from L48 import replace_green_screen48
+from L10 import process_frame
+from L18 import replace_green_screen18
+from L03 import replace_green_screen03
 from const import lower_green, upper_green
 
 app = Flask(__name__)
@@ -28,7 +34,7 @@ def index():
     if request.method == 'POST':
         video_file = request.files['video']
         bg_file = request.files['background']
-
+        option = request.form['options']
         if not video_file or not bg_file:
             return "Missing file(s)", 400
 
@@ -44,8 +50,20 @@ def index():
         video_frames = get_video_frames(video_path)
         if not video_frames:
             return "Failed to load video frames", 500
-
-        output_frames = replace_green_screen30(video_frames, bg_image, lower_green, upper_green)
+        output_frames = []
+        if option == 'basic':
+            output_frames = replace_green_screen03(video_frames, bg_image, lower_green, upper_green)
+        elif option == 'noise':
+            output_frames =  replace_green_screen48(video_frames, bg_image, lower_green, upper_green)
+        elif option == 'moving_box':
+            output_frames = replace_green_screen_adaptive(video_frames, bg_image, lower_green, upper_green)
+        elif option == 'resize_box':
+            output_frames = replace_green_screen18(video_frames, bg_image, lower_green, upper_green)
+        elif option == 'shake_box':
+            output_frames = replace_green_screen30(video_frames, bg_image, lower_green, upper_green)
+        elif option == 'object_detection':
+            output_frames = process_frame(video_frames, bg_image, lower_green, upper_green)
+            
 
         # Encode video vào bộ nhớ RAM
         temp_video = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')

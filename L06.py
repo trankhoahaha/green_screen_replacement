@@ -16,16 +16,24 @@ def detect_green_screen(frame, lower_green, upper_green):
 def get_reference_size(frames, lower_green, upper_green, area_threshold=0.05):
     max_area = 0
     ref_box = None
-    for frame in frames:
+    idx = 0
+    total_frame = len(frames)
+    for idx in range(total_frame):
+        frame = frames[idx]
         box, mask = detect_green_screen(frame, lower_green, upper_green)
         if box is None:
             continue
         x, y, w, h = box
+
+        # check break for x and y is not 0
+        if x > 0 and y > 0 and x + w < frame.shape[1] and y + h < frame.shape[0]:
+            break
         area = w * h
         frame_area = frame.shape[0] * frame.shape[1]
         if area / frame_area > area_threshold and area > max_area:
             max_area = area
             ref_box = box
+        idx += 8
     return ref_box
 
 
