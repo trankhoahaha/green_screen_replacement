@@ -46,7 +46,9 @@ def replace_green_screen_adaptive(frames, bg_image, lower_green, upper_green):
     bg_resized = cv.resize(bg_image, (ref_w, ref_h))
     output_frames = []
 
-    for frame in frames:
+    for idx, frame in enumerate(frames):
+        print(idx)
+
         box, mask = detect_green_screen(frame, lower_green, upper_green)
         if box is None:
             output_frames.append(frame.copy())
